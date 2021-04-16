@@ -9,12 +9,8 @@ import spark.Response;
 
 import javax.servlet.http.HttpServletResponse;
 
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.post;
 
 public class Main {
     public static void main (String[] args){
