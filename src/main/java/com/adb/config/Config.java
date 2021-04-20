@@ -1,8 +1,13 @@
 package com.adb.config;
 
 public class Config {
-    public static void init(){
-        String port = System.getenv("port");
-        System.out.println("Puerto: " + port);
+    public static int getSparkPort(){
+        int port;
+        try{
+            port = Integer.parseInt(System.getProperty("spark.port"));
+        } catch (NumberFormatException e){
+            port = 4567;
+        }
+        return port;
     }
 }
