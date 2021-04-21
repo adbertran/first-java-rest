@@ -12,9 +12,13 @@ public class CarController {
     public static Object getCarDetails(Request req, Response res) {
         String color = req.queryParams("color");
         String brand = req.queryParams("brand");
-        if (color == null || brand == null) {
+        if (color == null) {
             res.status(HttpServletResponse.SC_BAD_REQUEST);
-            return "Pusiste mal los parametros";
+            return "Pusiste mal el color";
+        }
+        if (brand == null) {
+            res.status(HttpServletResponse.SC_BAD_REQUEST);
+            return "Pusiste mal la brand";
         }
         Engine engine = new Engine(123, 1000.5D);
 
