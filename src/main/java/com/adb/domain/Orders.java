@@ -106,11 +106,13 @@ public class Orders {
     @PrePersist
     protected void onCreate() {
         this.lastUpdated = this.dateCreated = new Timestamp(new Date().getTime());
+
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.lastUpdated = new Timestamp(new Date().getTime());
+
     }
 
     @Override

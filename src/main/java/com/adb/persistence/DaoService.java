@@ -82,10 +82,13 @@ public enum DaoService {
 
             order = session.get(Orders.class, orderId);
 
-            if (order != null)
+            if (order != null) {
                 session.delete(order);
 
-            tx.commit();
+                session.flush();
+                tx.commit();
+            }
+
 
         } catch (Exception e) {
             if (tx != null)
