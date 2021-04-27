@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class UserJson {
     private int userID;
     private String name;
     private String date;
     private Map<String, String> domicilio;
-    private List<User> listadoDeClientes;
+    private List<UserJson> listadoDeClientes;
 
     public int getUserID() {
         return userID;
@@ -45,11 +45,11 @@ public class User {
         this.domicilio = domicilio;
     }
 
-    public List<User> getListadoDeClientes() {
+    public List<UserJson> getListadoDeClientes() {
         return listadoDeClientes;
     }
 
-    public void setListadoDeClientes(List<User> listadoDeClientes) {
+    public void setListadoDeClientes(List<UserJson> listadoDeClientes) {
         this.listadoDeClientes = listadoDeClientes;
     }
 }

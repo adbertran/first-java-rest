@@ -1,6 +1,7 @@
 package com.adb.persistence;
 
 import com.adb.domain.Orders;
+import com.adb.domain.Users;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -95,6 +96,37 @@ public enum DaoService {
                 tx.rollback();
 
             throw new RuntimeException(String.format("Error deleting the Order (%d) from the DB.", orderId), e);
+
+        } finally {
+            session.close();
+
+        }
+
+    }
+
+    public void deleteUser(Integer userId) {
+        Users users;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            users = session.get(Users.class, userId);
+
+            if (users != null) {
+                session.delete(users);
+
+                session.flush();
+                tx.commit();
+            }
+
+
+        } catch (Exception e) {
+            if (tx != null)
+                tx.rollback();
+
+            throw new RuntimeException(String.format("Error deleting the User (%d) from the DB.", userId), e);
 
         } finally {
             session.close();
