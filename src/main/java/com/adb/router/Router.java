@@ -1,4 +1,4 @@
-package com.adb.config;
+package com.adb.router;
 
 import com.adb.controllers.CarController;
 import com.adb.controllers.UsersController;
@@ -14,6 +14,7 @@ public class Router implements SparkApplication {
     public void init() {
         get("/hello", HelloController::getHello);
         get("/car/details", CarController::getCarDetails);
+        get("/users/:user_id", UsersController::getUser);
         post("/users/create", UsersController::postCreateUser);
         delete("/users/delete", UsersController::deleteUser);
         Spark.notFound((req, res) -> {res.type("application/json");

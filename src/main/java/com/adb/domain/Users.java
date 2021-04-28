@@ -109,8 +109,8 @@ public class Users {
     public static Users createFrom(UserJson userJson) {
         Users userDb = new Users();
         userDb.userID = userJson.getUserID();
-        userDb.lastName = userJson.getName();
-        userDb.firstName = userJson.getName();
+        userDb.lastName = userJson.getName().split(" ")[1];
+        userDb.firstName = userJson.getName().split(" ")[0];
         //The fields dateCreated and lastUpdated are managed by Hibernate via annotations.
 
         return userDb;

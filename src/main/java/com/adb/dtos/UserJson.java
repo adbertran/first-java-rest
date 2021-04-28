@@ -1,7 +1,10 @@
 package com.adb.dtos;
 
+import com.adb.domain.Users;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,4 +55,34 @@ public class UserJson {
     public void setListadoDeClientes(List<UserJson> listadoDeClientes) {
         this.listadoDeClientes = listadoDeClientes;
     }
+
+
+    public static UserJson createFrom(Users users) {
+        UserJson userJson = new UserJson();
+        userJson.userID = users.getUserID();
+        userJson.name = users.getFirstName() + " " + users.getLastName();
+        userJson.date = new SimpleDateFormat("yyyy-MM-dd").format(users.getDateCreated());
+
+        return userJson;
+
+    }
+    public static UserJson createFrom(Users users, List<UserJson> listadoDeClientes) {
+        UserJson userJson = UserJson.createFrom(users);
+        userJson.listadoDeClientes = listadoDeClientes;
+
+        return userJson;
+
+    }
+
+    public static List<UserJson> createFrom(List<Users> listadoDeClientes) {
+        List<UserJson> list = new ArrayList<>();
+
+        for(Users userDb: listadoDeClientes) {
+            list.add(createFrom(userDb));
+        }
+
+        return list;
+
+    }
+
 }

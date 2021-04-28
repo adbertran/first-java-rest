@@ -6,6 +6,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import javax.persistence.Query;
+import java.util.List;
+
 public enum DaoService {
     INSTANCE;
 
@@ -132,6 +135,60 @@ public enum DaoService {
             session.close();
 
         }
+
+    }
+
+    public Users getUser(Integer userId) {
+        Users users;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            users = session.get(Users.class, userId);
+
+        } catch (Exception e) {
+            if (tx != null)
+                tx.rollback();
+
+            throw new RuntimeException(String.format("Error getting the User (%d) from the DB.", userId), e);
+
+        } finally {
+            session.close();
+
+        }
+
+        return users;
+
+    }
+
+    public List<Users> getUsersForId(Integer userId, String name) {
+        List<Users> users;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            Query query = session.createQuery("SELECT u FROM Users u WHERE u.userID <> :userId AND u.firstName = :name");
+            query.setParameter("userId", userId);
+            query.setParameter("name", name);
+
+            users = query.getResultList();
+
+        } catch (Exception e) {
+            if (tx != null)
+                tx.rollback();
+
+            throw new RuntimeException(String.format("Error getting the User List for User id (%d) from the DB.", userId), e);
+
+        } finally {
+            session.close();
+
+        }
+
+        return users;
 
     }
 
