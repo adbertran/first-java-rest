@@ -33,6 +33,11 @@ public class Config {
 
     }
 
+    public static String getDomainUrl() {
+        return appProps.getProperty("api.domain.host") + ":" + appProps.getProperty("api.domain.port") ;
+
+    }
+
 }
 
 

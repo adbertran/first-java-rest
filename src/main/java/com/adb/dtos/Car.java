@@ -1,28 +1,20 @@
 package com.adb.dtos;
 
-import java.util.Arrays;
-import java.util.List;
+import java.math.BigDecimal;
 
 public class Car {
-    private String color;
+    private Integer carId;
     private String brand;
-    private Engine engine;
-    private List<String> parts= Arrays.asList("rueda","puerta","parabrisas");
+    private String colour;
+    private BigDecimal value;
+    private String licensePlate;
 
-    public List<String> getParts() {
-        return parts;
+    public Integer getCarId() {
+        return carId;
     }
 
-    public void setParts(List<String> parts) {
-        this.parts = parts;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
+    public void setCarId(Integer carId) {
+        this.carId = carId;
     }
 
     public String getBrand() {
@@ -33,11 +25,28 @@ public class Car {
         this.brand = brand;
     }
 
-    public Engine getEngine() {
-        return engine;
+    public String getColour() {
+        return colour;
     }
 
-    public void setEngine(Engine engine) {
-        this.engine = engine;
+    public void setColour(String colour) {
+        this.colour = colour;
     }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
 }
