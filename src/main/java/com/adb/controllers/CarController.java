@@ -1,9 +1,10 @@
 package com.adb.controllers;
 
 import com.adb.clients.CarsRestClient;
-import com.adb.dtos.Car;
+import com.adb.dtos.CarJson;
 import com.adb.dtos.CarV0;
 import com.adb.dtos.Engine;
+import com.adb.exceptions.ApiException;
 import com.adb.utils.JsonFormatter;
 import com.adb.utils.JsonResponseFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,19 +43,56 @@ public class CarController {
     }
 
     public static Object getCarById(Request req, Response res) throws JsonProcessingException {
-        Long carId = Long.valueOf(req.params(":car_id"));
-        Car car;
+        CarJson carJson;
 
         try {
-            car = CarsRestClient.getCars(carId);
+            Long carId = Long.valueOf(req.params(":car_id"));
+            carJson = CarsRestClient.getCars(carId);
         } catch(Exception e) {
-            return JsonResponseFactory.createErrorResponse(res, HttpServletResponse.SC_NOT_FOUND, String.format("Car %d not found", carId));
-
+            return JsonResponseFactory.createErrorResponse(res, HttpServletResponse.SC_NOT_FOUND, e);
+            //return JsonResponseFactory.createErrorResponse(res, HttpServletResponse.SC_NOT_FOUND, String.format("Car %d not found", carId));
         }
 
 
-        return JsonResponseFactory.createJsonResponse(res, HttpServletResponse.SC_OK, car);
+        return JsonResponseFactory.createJsonResponse(res, HttpServletResponse.SC_OK, carJson);
 
     }
 
+    public static Object getCarByIdV2(Request req, Response res) throws ApiException {
+        CarJson carJson;
+
+        try {
+            Long carId = Long.valueOf(req.params(":car_id"));
+            carJson = CarsRestClient.getCarsV2(carId);
+        } catch(NumberFormatException e) {
+            throw new ApiException(String.format("El parametro carId [%s] es incorrecto", req.params(":car_id")), HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+
+        return JsonResponseFactory.createJsonResponse(res, HttpServletResponse.SC_OK, carJson);
+
+    }
+
+    public static Object deleteCarById(Request req, Response res) throws ApiException {
+        try {
+            Long carId = Long.valueOf(req.params(":car_id"));
+            CarsRestClient.deleteCar(carId);
+        } catch(NumberFormatException e) {
+            throw new ApiException(String.format("El parametro carId [%s] es incorrecto", req.params(":car_id")), HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+
+        return JsonResponseFactory.createSuccessResponse(res);
+
+    }
+
+    public static Object createVW(Request req, Response res) throws JsonProcessingException, ApiException {
+        CarJson carJson = JsonFormatter.parse(req.body(), CarJson.class);
+        if (!carJson.getLicensePlate().startsWith("VW")) {
+            throw new ApiException(String.format("Invalid license plate [%s]", carJson.getLicensePlate()), HttpServletResponse.SC_BAD_REQUEST);
+        }
+        carJson.setBrand("VolksWagen");
+        CarsRestClient.createVW(carJson);
+        return JsonResponseFactory.createSuccessResponse(res);
+    }
 }

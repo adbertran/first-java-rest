@@ -2,7 +2,7 @@ package com.adb.dtos;
 
 import java.math.BigDecimal;
 
-public class Car {
+public class CarJson {
     private Integer carId;
     private String brand;
     private String colour;

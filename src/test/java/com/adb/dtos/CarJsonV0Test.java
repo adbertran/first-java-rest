@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CarV0Test {
+class CarJsonV0Test {
     @Test
     public void testCreateCar() {
         CarV0 carV0 = new CarV0();
