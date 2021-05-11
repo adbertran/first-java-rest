@@ -12,6 +12,7 @@ import spark.Request;
 import spark.Response;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 public class CarController {
     public static Object getCarDetails(Request req, Response res) {
@@ -62,7 +63,7 @@ public class CarController {
         CarJson carJson;
 
         try {
-            Long carId = Long.valueOf(req.params(":car_id"));
+            Integer carId = Integer.valueOf(req.params(":car_id"));
             carJson = CarsRestClient.getCarsV2(carId);
         } catch(NumberFormatException e) {
             throw new ApiException(String.format("El parametro carId [%s] es incorrecto", req.params(":car_id")), HttpServletResponse.SC_BAD_REQUEST);
@@ -94,5 +95,26 @@ public class CarController {
         carJson.setBrand("VolksWagen");
         CarsRestClient.createVW(carJson);
         return JsonResponseFactory.createSuccessResponse(res);
+    }
+
+    public static Object updateLicensePlate(Request req, Response res) throws ApiException {
+        Integer carId = Integer.parseInt(req.params(":car_id"));
+        Map<String, String> mapJson = null;
+        try {
+            mapJson = JsonFormatter.parse(req.body(), Map.class);
+            validateLicensePlate(mapJson);
+        } catch (JsonProcessingException e) {
+            throw new ApiException("Error parsing License Plate.", HttpServletResponse.SC_BAD_REQUEST);
+        }
+        CarJson carJson = CarsRestClient.getCarsV2(carId);
+        carJson.setLicensePlate(mapJson.get("licensePlate"));
+        CarsRestClient.putCar(carJson);
+        return JsonResponseFactory.createSuccessResponse(res);
+    }
+
+    private static void validateLicensePlate(Map<String, String> map) throws ApiException {
+        if (map == null || !map.containsKey("licensePlate") || map.get("licensePlate") == null ){
+            throw new ApiException("Missing License Plate.", HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 }

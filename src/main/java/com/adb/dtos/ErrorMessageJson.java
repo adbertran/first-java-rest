@@ -12,6 +12,9 @@ public class ErrorMessageJson {
         this.stackTrace = stackTrace;
     }
 
+    public ErrorMessageJson() {
+    }
+
     public ErrorMessageJson(String errorMessage, String stackTrace) {
         this.errorMessage = errorMessage;
         this.stackTrace = stackTrace;

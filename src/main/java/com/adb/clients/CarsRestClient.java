@@ -2,7 +2,10 @@ package com.adb.clients;
 
 import com.adb.config.Config;
 import com.adb.dtos.CarJson;
+import com.adb.dtos.ErrorMessageJson;
 import com.adb.exceptions.ApiException;
+import com.adb.utils.JsonFormatter;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -33,7 +36,7 @@ public class CarsRestClient {
         return car.block();
     }
 
-    public static CarJson getCarsV2(Long carId) throws ApiException {
+    public static CarJson getCarsV2(Integer carId) throws ApiException {
         try {
             return getRestClient().get().uri(String.format(DEFAULT_CLIENT_URL, carId)).retrieve().bodyToMono(CarJson.class).block();
         } catch (WebClientRequestException e) {
@@ -73,15 +76,36 @@ public class CarsRestClient {
 
     public static void createVW(CarJson car) throws ApiException {
         try {
-            getRestClient().post().uri(POST_CLIENT_URL).contentType(MediaType.APPLICATION_JSON_UTF8).body(car, CarJson.class).header("X-Admin", "true").retrieve().bodyToMono(Void.class).block();
+            CarJson carJson = getRestClient().post()
+                    .uri(POST_CLIENT_URL)
+                    .body(Mono.just(car), CarJson.class)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("X-Admin", "true")
+                    .retrieve()
+                    .bodyToMono(CarJson.class)
+                    .block();
+            if (!carJson.getBrand().equalsIgnoreCase("VolksWagen")) {
+                throw new ApiException("The brands do not match.");
+            }
         } catch (WebClientRequestException e) {
             throw new ApiException("Critical error - cannot reach the server.");
         } catch (WebClientResponseException e) {
             switch (e.getRawStatusCode()) {
                 case HttpServletResponse.SC_BAD_REQUEST:
+                    //En este caso, nosotros estamos poniendo el mensaje de error.
                     throw new ApiException("Invalid parameter.", HttpServletResponse.SC_BAD_REQUEST);
                 case HttpServletResponse.SC_FORBIDDEN:
+                    //Acá leemos el literal del status code que vino en el mensaje.
                     throw new ApiException(e.getStatusText(), HttpServletResponse.SC_FORBIDDEN);
+                case HttpServletResponse.SC_CONFLICT:
+                    //Ponemos el mensaje de error generado por carsapi.
+                    String errorMsg;
+                    try {
+                        errorMsg = JsonFormatter.parse(e.getResponseBodyAsString(), ErrorMessageJson.class).getErrorMessage();
+                    } catch (JsonProcessingException jsonProcessingException) {
+                        errorMsg = "Conflict.";
+                    }
+                    throw new ApiException(errorMsg, HttpServletResponse.SC_CONFLICT);
                 default:
                     throw new ApiException("Internal Server Error.", e);
             }
@@ -111,4 +135,34 @@ public class CarsRestClient {
         }
     }
 
+    public static void putCar(CarJson car) throws ApiException {
+        try {
+            CarJson carJson = getRestClient().put()
+                    .uri(DEFAULT_CLIENT_URL)
+                    .body(Mono.just(car), CarJson.class)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("X-Admin", "true")
+                    .retrieve()
+                    .bodyToMono(CarJson.class)
+                    .block();
+            if (carJson == null || !carJson.getCarId().equals(car.getCarId())) {
+                throw new ApiException("The car IDs do not match.");
+            }
+        } catch (WebClientRequestException e) {
+            throw new ApiException("Critical error - cannot reach the server.");
+        } catch (WebClientResponseException e) {
+            switch (e.getRawStatusCode()) {
+                case HttpServletResponse.SC_BAD_REQUEST:
+                    //En este caso, nosotros estamos poniendo el mensaje de error.
+                    throw new ApiException("Invalid parameter.", HttpServletResponse.SC_BAD_REQUEST);
+                case HttpServletResponse.SC_FORBIDDEN:
+                    //Acá leemos el literal del status code que vino en el mensaje.
+                    throw new ApiException(e.getStatusText(), HttpServletResponse.SC_FORBIDDEN);
+                default:
+                    throw new ApiException("Internal Server Error.", e);
+            }
+        } catch (Exception e) {
+            throw new ApiException(e.getMessage());
+        }
+    }
 }

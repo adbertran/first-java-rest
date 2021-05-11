@@ -17,6 +17,7 @@ public class Router implements SparkApplication {
         get("/cars/:car_id", CarController::getCarByIdV2);
         delete("/cars/:car_id", CarController::deleteCarById);
         post("/cars/create/vw", CarController::createVW);
+        put("/cars/:car_id", CarController::updateLicensePlate);
 
         get("/users/:user_id", UsersController::getUser);
         post("/users/create", UsersController::postCreateUser);
