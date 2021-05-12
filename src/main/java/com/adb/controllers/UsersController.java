@@ -2,8 +2,10 @@ package com.adb.controllers;
 
 import com.adb.domain.Users;
 import com.adb.dtos.UserJson;
+import com.adb.exceptions.ApiException;
 import com.adb.persistence.DaoService;
 import com.adb.utils.JsonFormatter;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import spark.Request;
 import spark.Response;
 
@@ -49,25 +51,21 @@ public class UsersController {
         }
     }
 
-    public static Object getUser(Request req, Response res) {
-        try {
-            String userId = req.params(":user_id");
+    public static Object getUser(Request req, Response res) throws JsonProcessingException, ApiException {
+        String userId = req.params(":user_id");
 
-            String name = req.queryParams("user");
+        String name = req.queryParams("user");
 
-            Users users = DaoService.INSTANCE.getUser(Integer.valueOf(userId));
+        Users users = DaoService.INSTANCE.getUser(Integer.valueOf(userId));
 
-            res.header("Content-Type", "application/json");
-            res.status(HttpServletResponse.SC_OK);
+        if(users == null)
+            throw new ApiException(String.format("User %s not found.", userId));
 
-            List<Users> userList = DaoService.INSTANCE.getUsersForId(Integer.valueOf(userId), name);
+        res.header("Content-Type", "application/json");
+        res.status(HttpServletResponse.SC_OK);
 
-            return JsonFormatter.format(UserJson.createFrom(users, UserJson.createFrom(userList) ));
+        List<Users> userList = DaoService.INSTANCE.getUsersForId(Integer.valueOf(userId), name);
 
-        } catch (Exception e) {
-            res.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return "Se rompio json: " + e.getMessage();
-
-        }
+        return JsonFormatter.format(UserJson.createFrom(users, UserJson.createFrom(userList)));
     }
 }

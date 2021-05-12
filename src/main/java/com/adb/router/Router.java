@@ -4,14 +4,20 @@ import com.adb.controllers.CarController;
 import com.adb.controllers.HelloController;
 import com.adb.controllers.PaymentController;
 import com.adb.controllers.UsersController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Spark;
 import spark.servlet.SparkApplication;
 
 import static spark.Spark.*;
 
 public class Router implements SparkApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Router.class);
+
     @Override
     public void init() {
+        LOGGER.info("Routers initialization starting, class name {} init routers quantity {}", Router.class.getCanonicalName(), 10);
+
         get("/hello", HelloController::getHello);
         get("/car/details", CarController::getCarDetails);
         get("/cars/:car_id", CarController::getCarByIdV2);
@@ -28,5 +34,6 @@ public class Router implements SparkApplication {
         post("/payment/processing", PaymentController::processPayment);
 
         Spark.exception(Exception.class, new ApiExceptionHandler<>());
+
     }
 }
