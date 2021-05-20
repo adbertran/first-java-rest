@@ -1,5 +1,6 @@
 package com.adb.utils;
 
+import com.adb.dtos.AbstractJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,11 +11,11 @@ public class JsonFormatter {
         MAPPER = new ObjectMapper();
     }
 
-    public static String format(Object o) throws JsonProcessingException {
+    public static String format(AbstractJson o) throws JsonProcessingException {
         return MAPPER.writeValueAsString(o);
     }
 
-    public static <T> T parse(String json, Class<T> valueType) throws JsonProcessingException {
+    public static <T extends AbstractJson> T parse(String json, Class<T> valueType) throws JsonProcessingException {
         return MAPPER.readValue(json, valueType);
     }
 }

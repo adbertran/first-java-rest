@@ -1,6 +1,6 @@
 package com.adb.dtos;
 
-public class ResponseDescription {
+public class ResponseDescription extends AbstractJson {
     private String description;
 
     public ResponseDescription(String description) {

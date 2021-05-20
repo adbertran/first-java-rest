@@ -99,21 +99,21 @@ public class CarController {
 
     public static Object updateLicensePlate(Request req, Response res) throws ApiException {
         Integer carId = Integer.parseInt(req.params(":car_id"));
-        Map<String, String> mapJson = null;
+        CarJson carJson1 = null;
         try {
-            mapJson = JsonFormatter.parse(req.body(), Map.class);
-            validateLicensePlate(mapJson);
+            carJson1 = JsonFormatter.parse(req.body(), CarJson.class);
+            validateLicensePlate(carJson1.getLicensePlate());
         } catch (JsonProcessingException e) {
             throw new ApiException("Error parsing License Plate.", HttpServletResponse.SC_BAD_REQUEST);
         }
         CarJson carJson = CarsRestClient.getCarsV2(carId);
-        carJson.setLicensePlate(mapJson.get("licensePlate"));
+        carJson.setLicensePlate(carJson1.getLicensePlate());
         CarsRestClient.putCar(carJson);
         return JsonResponseFactory.createSuccessResponse(res);
     }
 
-    private static void validateLicensePlate(Map<String, String> map) throws ApiException {
-        if (map == null || !map.containsKey("licensePlate") || map.get("licensePlate") == null ){
+    private static void validateLicensePlate(String licensePlate) throws ApiException {
+        if (licensePlate == null || licensePlate.isEmpty() ){
             throw new ApiException("Missing License Plate.", HttpServletResponse.SC_BAD_REQUEST);
         }
     }

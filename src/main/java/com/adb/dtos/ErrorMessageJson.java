@@ -1,6 +1,6 @@
 package com.adb.dtos;
 
-public class ErrorMessageJson {
+public class ErrorMessageJson extends AbstractJson {
     private String errorMessage;
     private String stackTrace;
 

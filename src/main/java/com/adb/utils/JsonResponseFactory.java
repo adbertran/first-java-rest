@@ -1,6 +1,8 @@
 package com.adb.utils;
 
+import com.adb.dtos.AbstractJson;
 import com.adb.dtos.ErrorMessageJson;
+import com.adb.dtos.SuccessMessageJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import spark.Response;
 
@@ -16,12 +18,10 @@ public class JsonResponseFactory {
     }
 
     public static String createSuccessResponse(Response res) {
-        Map<String, String> map = new HashMap<>();
-        map.put("Success", "true");
-        return createJsonResponse(res, HttpServletResponse.SC_OK, map);
+        return createJsonResponse(res, HttpServletResponse.SC_OK, new SuccessMessageJson("true"));
     }
 
-    public static String createJsonResponse(Response res, int statusCode, Object o) {
+    public static String createJsonResponse(Response res, int statusCode, AbstractJson o) {
         try {
             res.header("Content-Type", "application/json");
             res.status(statusCode);

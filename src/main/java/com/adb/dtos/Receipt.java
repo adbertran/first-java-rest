@@ -1,6 +1,6 @@
 package com.adb.dtos;
 
-public class Receipt {
+public class Receipt extends AbstractJson {
     private Long id;
     private Long paymentID;
     private Boolean status;

@@ -1,6 +1,6 @@
 package com.adb.dtos;
 
-public class Engine {
+public class Engine extends AbstractJson {
     private Integer hp;
     private Double price;
 

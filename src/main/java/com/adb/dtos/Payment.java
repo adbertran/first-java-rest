@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Payment {
+public class Payment extends AbstractJson {
     @JsonProperty("ID")
     private Long id;
     @JsonProperty("Amount")

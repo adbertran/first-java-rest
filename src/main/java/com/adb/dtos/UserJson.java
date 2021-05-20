@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserJson {
+public class UserJson extends AbstractJson {
     private int userID;
     private String name;
     private String date;

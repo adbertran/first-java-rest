@@ -3,7 +3,7 @@ package com.adb.dtos;
 import java.util.Arrays;
 import java.util.List;
 
-public class CarV0 {
+public class CarV0 extends AbstractJson {
     private String color;
     private String brand;
     private Engine engine;

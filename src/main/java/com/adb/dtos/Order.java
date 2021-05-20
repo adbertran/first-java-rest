@@ -1,6 +1,6 @@
 package com.adb.dtos;
 
-public class Order {
+public class Order extends AbstractJson {
     private Long orderId;
     private String siteId;
     private String itemId;
